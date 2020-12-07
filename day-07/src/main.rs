@@ -32,28 +32,29 @@ fn unique_bags_containing(bag_color: String, rules: &str) -> Vec<String> {
     bags_containing_color
 }
 
-fn bags_contained(bag_color: String, rules: &str) -> usize {
+fn bags_contained(bag_color: String, rules: &str, initial: usize) -> usize {
     lazy_static! {
         static ref BAG_COLOR_RE: Regex =
             Regex::new(r"(?P<num>\d+) (?P<color>[a-z]+ [a-z]+)").unwrap();
     }
-    1 + rules
-        .split('\n')
-        .filter(|s| s.contains(&format!("{} bags contain", bag_color)))
-        .map(|c| {
-            BAG_COLOR_RE
-                .captures_iter(c)
-                .map(|cap| {
-                    let num = cap
-                        .name("num")
-                        .map(|n| n.as_str().parse::<usize>().unwrap())
-                        .unwrap();
-                    let color = cap.name("color").unwrap().as_str();
-                    num * bags_contained(String::from(color), rules)
-                })
-                .sum::<usize>()
-        })
-        .sum::<usize>()
+    initial
+        + rules
+            .split('\n')
+            .filter(|s| s.contains(&format!("{} bags contain", bag_color)))
+            .map(|c| {
+                BAG_COLOR_RE
+                    .captures_iter(c)
+                    .map(|cap| {
+                        let num = cap
+                            .name("num")
+                            .map(|n| n.as_str().parse::<usize>().unwrap())
+                            .unwrap();
+                        let color = cap.name("color").unwrap().as_str();
+                        num * bags_contained(String::from(color), rules, 1)
+                    })
+                    .sum::<usize>()
+            })
+            .sum::<usize>()
 }
 
 fn main() {
@@ -64,10 +65,9 @@ fn main() {
         unique_bags_containing(String::from("shiny gold"), &input).len()
     );
 
-    // Because of a hack in how the recursive function is set up have to subtract the initial
     println!(
         "Part 2: {}",
-        bags_contained(String::from("shiny gold"), &input) - 1
+        bags_contained(String::from("shiny gold"), &input, 0)
     );
 }
 
@@ -101,6 +101,6 @@ dark yellow bags contain 2 dark green bags.
 dark green bags contain 2 dark blue bags.
 dark blue bags contain 2 dark violet bags.
 dark violet bags contain no other bags.";
-        assert_eq!(bags_contained(String::from("shiny gold"), rules) - 1, 126);
+        assert_eq!(bags_contained(String::from("shiny gold"), rules, 0), 126);
     }
 }
