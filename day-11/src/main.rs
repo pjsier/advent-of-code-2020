@@ -7,7 +7,7 @@ fn parse_seats(seat_input: &str) -> Vec<Vec<char>> {
         .collect()
 }
 
-fn print_seat_grid(seat_grid: &Vec<Vec<char>>) {
+fn print_seat_grid(seat_grid: &[Vec<char>]) {
     println!(
         "{}",
         seat_grid
@@ -18,7 +18,7 @@ fn print_seat_grid(seat_grid: &Vec<Vec<char>>) {
     )
 }
 
-fn adjacent_seats(seat_grid: &Vec<Vec<char>>, row: usize, col: usize) -> Vec<char> {
+fn adjacent_seats(seat_grid: &[Vec<char>], row: usize, col: usize) -> Vec<char> {
     let mut seats: Vec<char> = vec![];
     for row_idx in row.saturating_sub(1)..=row + 1 {
         if row_idx >= seat_grid.len() {
@@ -36,7 +36,7 @@ fn adjacent_seats(seat_grid: &Vec<Vec<char>>, row: usize, col: usize) -> Vec<cha
 }
 
 fn line_of_sight_seats(
-    seat_grid: &Vec<Vec<char>>,
+    seat_grid: &[Vec<char>],
     row: usize,
     col: usize,
     row_diff: isize,
@@ -75,7 +75,7 @@ fn line_of_sight_seats(
     seats
 }
 
-fn visible_seats(seat_grid: &Vec<Vec<char>>, row: usize, col: usize) -> Vec<char> {
+fn visible_seats(seat_grid: &[Vec<char>], row: usize, col: usize) -> Vec<char> {
     let steps: Vec<(isize, isize)> = vec![
         (-1, -1),
         (-1, 0),
